@@ -1,0 +1,99 @@
+using System.Collections;
+using System.Collections.Generic;
+using System;
+using System.Linq;
+using System.Text;
+
+namespace zadach
+{
+    class Program
+    {
+        static void Main()
+        {
+            var n = int.Parse(Console.ReadLine());
+            Dictionary<int, TreeNode> nodes = new Dictionary<int, TreeNode>();
+            TreeNode root = new TreeNode();
+            root.ID = 0;
+            root.deep = 0;
+            nodes.Add(0, root);
+
+            var deep_node = root;
+            var max_h = 0;
+            StringBuilder sb = new StringBuilder();
+            sb.Append("0 ");
+
+            var line = Console.ReadLine().Split(" ");
+            for (int i = 0; i < n - 1; i++)
+            {
+                var x = int.Parse(line[i]);
+
+                root = new TreeNode();     
+                root.ID = i+1;
+                root.Parent = nodes[x];
+                root.deep = nodes[x].deep + 1;
+                nodes[x].Children.Add(i+1,root);
+                nodes.Add(i+1,root);
+
+                sb.Append(root.deep);
+                sb.Append(" ");
+
+                if (root.deep > max_h)
+                {
+                    max_h = root.deep;
+                    deep_node = root;
+                }
+            }
+
+            Queue<TreeNode> queue = new Queue<TreeNode>();
+            deep_node.Check = 0;
+            deep_node.Parent.Check = 1;
+            deep_node.Parent.Children.Remove(deep_node.ID);
+            queue.Enqueue(deep_node.Parent);
+
+            int? hell = 1;
+            while(queue.Count > 0)
+            {
+                var node = queue.Dequeue();
+                if(hell < node.Check)
+                {
+                    hell = node.Check;
+                }
+
+                if(node.Parent != null && node.Parent.Check == null)
+                {
+                    node.Parent.Check = node.Check+1;
+                    queue.Enqueue(node.Parent);
+                    node.Parent.Children.Remove(node.ID);
+                }
+                foreach (var child in node.Children.Keys)
+                {
+                    var nd = node.Children[child];
+                    nd.Check = node.Check + 1;
+                    queue.Enqueue(nd);
+                }
+            }
+            Console.WriteLine($"{max_h} {hell}");
+            Console.WriteLine(sb);
+            
+        }       
+    }
+
+    public class TreeNode
+    {
+        public int ID { get; set; }
+
+        public int? Check { get; set; }
+
+        public TreeNode Parent { get; set; }
+
+        public int deep { get; set; }
+
+        public Dictionary<int,TreeNode> Children = new Dictionary<int, TreeNode>();
+
+        public TreeNode()
+        {
+            Check = null;
+            Parent = null;
+        }
+    }
+}
