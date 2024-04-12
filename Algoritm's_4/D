@@ -1,0 +1,43 @@
+﻿using System.Collections;
+using System.Collections.Generic;
+using System;
+using System.Linq;
+using System.Text;
+
+namespace zadach
+{
+    class Program
+    {
+        static void Main()
+        {
+            var line  = Console.ReadLine().Split(" ");
+            var n = long.Parse(line[0]);
+            var k = long.Parse(line[1]);
+
+            long left = 1;
+            long right = n * n;
+
+            while (left < right)
+            {
+                long mid = left + (right - left) / 2;
+                long count = 0;
+
+                for (long i = 1; i <= n; i++)
+                {
+                    count += Math.Min(mid / i, n);
+                    if(count > k) { break; }
+                }
+
+                if (count < k)
+                {
+                    left = mid + 1;
+                }
+                else
+                {
+                    right = mid;
+                }
+            }
+            Console.WriteLine(left);
+        }
+    }
+}
