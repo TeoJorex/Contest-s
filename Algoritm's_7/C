@@ -1,0 +1,82 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Text;
+
+class Program
+{
+    public static LinkedList<int> deq = new LinkedList<int>();
+
+    static (int, int) MaxInSlidingWindow(int[] A, int chislo, int i, int okno)
+    {
+        var x = 0;
+        var index = 0;
+        if (i >= okno - 1)
+        {
+            x = A[deq.First.Value];
+            index = deq.First.Value;
+        }
+        else
+        {
+            x = A[deq.First.Value];
+            index = deq.First.Value;
+        }
+        var n_ew = x + chislo;
+
+
+        if (deq.Count > 0 && deq.First.Value <= i - okno)
+        {
+            deq.RemoveFirst();
+        }
+
+        while (deq.Count > 0 && A[deq.Last.Value] >= n_ew)
+        {
+            deq.RemoveLast();
+        }
+
+        deq.AddLast(i);
+
+        return (x, index);
+    }
+
+    static void Main()
+    {
+        var s = Console.ReadLine().Split(" ");
+        var n = int.Parse(s[0]);
+        var okno = int.Parse(s[1]);
+        var line_1 = Console.ReadLine();
+        line_1 += " 0";
+        line_1 = "0 " + line_1;
+        var line = line_1.Split(" ");
+        int[] mas = new int[line.Length];
+        int[] path = new int[line.Length];
+        deq.AddLast(0);
+
+        for (int i = 1; i < line.Length; i++)
+        {
+            var tuple = MaxInSlidingWindow(mas, -1 * int.Parse(line[i]), i, okno);
+            mas[i] = -1 * int.Parse(line[i]) + tuple.Item1;
+            path[i] = tuple.Item2;         
+        }
+        Console.WriteLine(-1 * mas[line.Length - 1]);
+        List<int> list = new List<int>();
+        list.Add(n);
+        var index = path[path.Length - 1];
+        var check = 0;
+        while (index != 0)
+        {
+            list.Add(index + 1);
+            index = path[index];
+            check++;
+        }
+        Console.WriteLine(check + 1);
+        list.Add(1);
+        StringBuilder sb = new StringBuilder();
+        for(int i = list.Count-1; i >= 0; i--)
+        {
+            sb.Append(list[i]);
+            sb.Append(" ");
+        }
+        Console.WriteLine(sb);
+
+    }
+}
