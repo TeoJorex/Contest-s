@@ -1,0 +1,68 @@
+using System.Collections;
+using System.Collections.Generic;
+using System;
+using System.Linq;
+using System.Text;
+
+namespace zadach
+{
+    class Program
+    {
+        static void Main()
+        {
+            LinkedList<string> list = new LinkedList<string>();
+            StringBuilder sb = new StringBuilder();
+            var n = int.Parse(Console.ReadLine());
+            var mid = 0;
+            LinkedListNode<string> node = null;
+            for(int i = 0; i < n; i++)
+            {
+                var line = Console.ReadLine().Split(" ");
+                switch (line[0])
+                {
+                    case "+":
+                        list.AddLast(line[1]);
+                        mid++;
+                        if(list.Count == 1)
+                        {
+                            node = list.First;
+                            break;
+                        }
+                        if(mid%2 == 1) 
+                        {
+                            node = node.Next;
+                        }
+                        break;
+                    case "*":
+                        mid++;
+                        if (list.Count == 0)
+                        {
+                            list.AddLast(line[1]);                           
+                            node = list.First;
+                            break;
+                        }
+                        if(mid%2 == 0)
+                        {
+                            list.AddAfter(node, line[1]);
+                        }
+                        else
+                        {
+                            list.AddAfter(node, line[1]);
+                            node = node.Next;
+                        }                     
+                        break;
+                    case "-":
+                        sb.AppendLine(list.First());                        
+                        mid--;
+                        if(mid%2 == 1)
+                        {
+                            node = node.Next;
+                        }
+                        list.RemoveFirst();
+                        break;
+                }
+            }
+            Console.WriteLine(sb);
+        }
+    }
+}
