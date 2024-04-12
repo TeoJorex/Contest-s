@@ -1,0 +1,72 @@
+﻿using System;
+
+class Programm
+{
+    static void Main()
+    {
+        var n = int.Parse(Console.ReadLine());
+        var line = Console.ReadLine().Split(" ");
+        long[] mAss = new long[n];
+        //Да это бит-дерево,но ДО так то тоже бинарное дерево + у меня это решение на кодефор зашло
+        N = n + 1;
+        BIT = new long[4, N];
+        for (int i = 0; i < n; i++)
+        {
+            mAss[i] = long.Parse(line[i]);
+        }
+        Console.Write(Skolko_mojno_lovit_ebuchi_TL(mAss, n));
+    }
+
+    static long N;
+    static long[,] BIT;
+
+    static void Kak_je_i_ustal(long t, long i, long val, long n)
+    {
+        while (i <= n)
+        {
+            BIT[t, i] = BIT[t, i] + val;
+            i = i + (i & (-i));
+        }
+    }
+
+    static long Hochu_na_staju(long t, long i)
+    {
+        long res = 0;
+
+        while (i > 0)
+        {
+            res = res + BIT[t, i];
+            i = i - (i & (-i));
+        }
+        return res;
+    }
+
+    static void HELP(long[] arr, long n)
+    {
+        long[] temp = new long[n];
+        for (long i = 0; i < n; i++)
+            temp[i] = arr[i];
+        Array.Sort(temp);
+
+        for (long i = 0; i < n; i++)
+        {
+            arr[i] = Array.BinarySearch(temp, arr[i]) + 1;
+        }
+    }
+    static long Skolko_mojno_lovit_ebuchi_TL(long[] arr, long n)
+    {
+        HELP(arr, n);
+
+        for (long i = n - 1; i >= 0; i--)
+        {
+            Kak_je_i_ustal(1, arr[i], 1, n);
+
+            for (long l = 1; l < 3; l++)
+            {
+                Kak_je_i_ustal(l + 1, arr[i], Hochu_na_staju(l, arr[i] - 1), n);
+            }
+        }
+
+        return Hochu_na_staju(3, n);
+    }   
+}
