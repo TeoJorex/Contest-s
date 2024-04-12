@@ -1,0 +1,62 @@
+﻿using System.Collections;
+using System.Collections.Generic;
+using System;
+using System.Linq;
+using System.Text;
+
+namespace zadach
+{
+    class Program
+    {
+        static void Main()
+        {
+            StringBuilder sb = new StringBuilder();
+            var s = Console.ReadLine();
+            long [] prefiks_hash = new long[s.Length];
+            long [] pow = new long[s.Length + 1];
+
+            const int k = 31;
+            const long mod = 1000000007;
+
+            prefiks_hash[0] = s[0];
+            pow[0] = 1;  
+
+            for (int i = 1; i <= s.Length; i++)
+            {
+                pow[i] = pow[i-1] * k;
+            }  
+
+            for(int i = 1; i < s.Length; i++)
+            {
+                prefiks_hash[i] = prefiks_hash[i-1] + pow[i] * s[i];
+            }
+
+            var N =  int.Parse(Console.ReadLine());
+            for(int i = 0; i < N; i++)
+            {
+                var line = Console.ReadLine().Split(" ");
+                int l_1 = int.Parse(line[0]) - 1;
+                int r_1 = int.Parse(line[1]) - 1;
+                int l_2 = int.Parse(line[2]) - 1;
+                int r_2 = int.Parse(line[3]) - 1;
+
+                if(getHash(prefiks_hash,l_1,r_1) * pow[l_2] == getHash(prefiks_hash,l_2,r_2)*pow[l_1])
+                {
+                    sb.AppendLine("Yes");
+                }
+                else
+                {
+                    sb.AppendLine("No");
+                }
+            }
+            Console.WriteLine(sb);
+        }
+
+        static long getHash(long[] prefiks_hash,int L,int R)
+        {
+            long result = prefiks_hash[R];
+            if(L>0) result -= prefiks_hash[L-1];
+            return result;
+        }
+    }
+}
