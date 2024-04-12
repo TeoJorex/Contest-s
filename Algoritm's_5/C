@@ -1,0 +1,102 @@
+﻿﻿using System.Collections;
+using System.Collections.Generic;
+using System;
+using System.Linq;
+using System.Text;
+using System.Numerics;
+
+namespace zadach
+{
+    class Program
+    {
+        static void Main()
+        {
+            const long mod = 1000000007;//999947
+            var s = Console.ReadLine();
+            long p = 62;
+            var sub = Console.ReadLine();
+            var n = sub.Length;
+            sub += sub;
+            Random random = new Random();
+            Dictionary<int, int> random_help = new Dictionary<int, int>();
+
+            long[] pow = new long[Math.Max(s.Length + 1, 2 * n)];
+            pow[0] = 1;
+            for (int i = 1; i < pow.Length; i++)
+            {
+                pow[i] = (pow[i - 1] * p) % mod;
+            }
+
+            long[] hash = new long[s.Length];
+            int random_sum_1 = random.Next(1, 1000);
+            hash[0] = (s[0] + random_sum_1);
+            random_help.Add(s[0], random_sum_1);
+
+            for (int i = 1; i < hash.Length; i++)
+            {
+                if (random_help.ContainsKey(s[i]) == false)
+                {
+                    int random_sum = random.Next(1, 1000);
+                    hash[i] = (hash[i - 1] * p + s[i] + random_sum) % mod;
+                    random_help.Add(s[i], random_sum);
+                }
+                else
+                {
+                    hash[i] = (hash[i - 1] * p + s[i] + random_help[s[i]]) % mod;
+                }
+            }
+            long[] hash_sub = new long[sub.Length];
+            if (random_help.ContainsKey(sub[0]) == false)
+            {
+                int random_sum = random.Next(1, 1000);
+                hash_sub[0] = (sub[0] + random_sum);
+                random_help.Add(sub[0], random_sum);
+            }
+            else
+            {
+                hash_sub[0] = (sub[0] + random_help[sub[0]]);
+            }
+            for (int i = 1; i < sub.Length; i++)
+            {
+                if (random_help.ContainsKey(sub[i]) == false)
+                {
+                    int random_sum = random.Next(1, 1000);
+                    hash_sub[i] = (hash_sub[i - 1] * p + sub[i] + random_sum) % mod;
+                    random_help.Add(sub[i], random_sum);
+                }
+                else
+                {
+                    hash_sub[i] = (hash_sub[i - 1] * p + sub[i] + random_help[sub[i]]) % mod;
+                }
+            }
+
+            Dictionary<long, bool> hash_hash = new Dictionary<long, bool>();
+            for (int i = 0; i < n; i++)
+            {
+                if (hash_hash.ContainsKey(get_segment_hash(hash_sub, pow, i, i + n - 1)) == false)
+                {
+                    hash_hash.Add(get_segment_hash(hash_sub, pow, i, i + n - 1), false);
+                }
+            }
+            long exit = 0;
+            for (int i = 0; i <= s.Length - n; i++)
+            {
+                if (hash_hash.ContainsKey(get_segment_hash(hash, pow, i, i + n - 1)) == true)
+                {
+                    exit++;
+                }
+            }
+            Console.WriteLine(exit);
+        }
+
+        static long get_segment_hash(long[] h, long[] p, int l, int r)
+        {
+            if (l == 0)
+            {
+                return (h[r]);
+            }
+            return (h[r] + 1000000007 - h[l - 1] * p[r - l + 1] % 1000000007) % 1000000007;
+        }
+    }
+
+}
