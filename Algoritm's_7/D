@@ -1,0 +1,70 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Numerics;
+using System.Text;
+
+class Tinkoff
+{
+    public static void Main()
+    {
+        var line = Console.ReadLine().Split(" ");
+        var n = int.Parse(line[0]);
+        var m = int.Parse(line[1]);
+        int[,] desk = new int[n,m];
+        desk[0, 0] = 1;
+        int i = 0;
+        int j = 0;
+        var check = 0;
+        var d = 0;
+        var d_i = 0;
+        while(check < n*m)
+        {
+            check++;
+            if(i - 1 >=0 && j - 2 >= 0)
+            {
+                desk[i, j] += desk[i-1, j-2];
+            }
+            if(i + 1 < n && j - 2 >= 0)
+            {
+                desk[i, j] += desk[i + 1, j - 2];
+            }
+            if(i - 2 >= 0 && j - 1 >= 0)
+            {
+                desk[i, j] += desk[i - 2, j - 1];
+            }
+            if(i -2 >= 0 && j + 1 < m)
+            {
+                desk[i, j] += desk[i - 2, j + 1];
+            }
+            i++;
+            j--;
+            if (i == n && d == m-1)
+            {
+                d_i++;
+                //if(d_i == n)
+                //{
+                //    for(int k  = 0; k < n; k++)
+                //    {
+                //        for(int a = 0; a < m; a++)
+                //        {
+                //            Console.Write(desk[k, a]);
+                //            Console.Write(" ");
+                //        }
+                //        Console.WriteLine();
+                //    }
+                //}
+                i = d_i;
+                j = m - 1;
+                continue;
+            }
+            if (j  < 0 || i == n)
+            {
+                d++;
+                i = 0;
+                j = d;
+
+            }            
+        }
+        Console.WriteLine(desk[n - 1, m - 1]);
+    }
+}
