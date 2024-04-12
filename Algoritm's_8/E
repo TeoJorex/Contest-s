@@ -1,0 +1,134 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+
+class Progremm
+{
+
+    const long mod = 1000000007;
+    public static long Ranker(long[] nums)
+    {
+        long n = nums.Length;
+        long[] temp = nums.ToArray();
+        Array.Sort(temp);
+        Dictionary<long, long> rank = new Dictionary<long, long>();
+        long mx = 0;
+        for (int i = 0; i < n; i++)
+        {
+            if (!rank.ContainsKey(temp[i]))
+            {
+                rank[temp[i]] = mx;
+                mx++;
+            }
+        }
+        for (int i = 0; i < n; i++)
+        {
+            nums[i] = rank[nums[i]];
+        }
+        return mx;
+    }
+
+    public static long[] BestWay(long[] left, long[] right)
+    {
+        long mxLen_LFT = left[0];
+        long ways_LFT = left[1];
+        long mxLen_RHT = right[0];
+        long ways_RHT = right[1];
+        if (mxLen_LFT > mxLen_RHT)
+        {
+            return new long[] { mxLen_LFT, ways_LFT };
+        }
+        else if (mxLen_LFT < mxLen_RHT)
+        {
+            return new long[] { mxLen_RHT, ways_RHT };
+        }
+        else
+        {
+            return new long[] { mxLen_LFT, ways_LFT + ways_RHT };
+        }
+    }
+
+    public static void Update(long start, long end, long parent, long element, long mxLength, long ways, long[][] tree)
+    {      
+        if (start == end)
+        { 
+            if (tree[parent][0] == mxLength)
+            {
+                tree[parent][1] = ((ways % mod) + (tree[parent][1]%mod))%mod;
+            }
+            else
+            {
+                tree[parent][0] = mxLength;
+                tree[parent][1] = (ways%mod);
+            }
+            return;
+        }
+        ways = ways % mod;
+        long mid = (start + end) / 2;
+        if (element <= mid)
+        {
+            Update(start, mid, 2 * parent + 1, element, mxLength, ways, tree);
+        }
+        else
+        {
+            Update(mid + 1, end, 2 * parent + 2, element, mxLength, ways, tree);
+        }
+        tree[parent] = BestWay(tree[2 * parent + 1], tree[2 * parent + 2]);
+    }
+
+    public static long[] MaxLen(long start, long end, long qstart, long qend, long parent, long[][] tree)
+    {
+        if (start > qend || end < qstart)
+        {
+            return new long[] { 0, 0 };
+        }
+        if (start >= qstart && end <= qend)
+        {
+            return tree[parent];
+        }
+        long mid = (start + end) / 2;
+        long[] left = MaxLen(start, mid, qstart, qend, 2 * parent + 1, tree);
+        long[] right = MaxLen(mid + 1, end, qstart, qend, 2 * parent + 2, tree);
+        return BestWay(left, right);
+    }
+
+    public static long FindNumberOfSeq(long[] nums)
+    {
+        long n = nums.Length;
+        long mx = Ranker(nums);  
+
+        long[][] tree = new long[4 * mx + 5][];
+        for (int i = 0; i < tree.Length; i++)
+        {
+            tree[i] = new long[2];
+        }
+        for (int i = 0; i < n; i++)
+        {
+            long mxLen = 1;
+            long ways = 1;
+            if (nums[i] > 0)
+            {
+                long[] info = MaxLen(0, mx, 0, nums[i] - 1, 0, tree);
+                if (info[0] + 1 > mxLen)
+                {
+                    mxLen = info[0] + 1;
+                    ways = info[1] % mod;
+                }
+            }
+            Update(0, mx, 0, nums[i], mxLen, ways, tree);
+        }
+        return tree[0][1]%mod;
+    }
+
+    public static void Main()
+    {
+        var n = int.Parse(Console.ReadLine());
+        var line = Console.ReadLine().Split(" ");
+        long[] mas = new long[n];
+        for(int i = 0; i < n; i++)
+        {
+            mas[i] = long.Parse(line[i]);
+        }
+        Console.WriteLine(FindNumberOfSeq(mas));
+    }
+}
