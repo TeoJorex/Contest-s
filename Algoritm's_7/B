@@ -1,0 +1,20 @@
+using System;
+using System.Collections.Generic;
+using System.Text;
+
+class MainClass
+{
+    public static void Main()
+    {
+        var n = int.Parse(Console.ReadLine());
+        int[,] mas = new int[2,n];
+        mas[0, 0] = 2;
+        mas[1, 0] = 1;
+        for(int i = 1; i < n; i++)
+        {
+            mas[0, i] = (mas[0,i-1] + mas[1,i-1]) * 2;
+            mas[1, i] = mas[0, i - 1];
+        }
+        Console.WriteLine(mas[0,n-1] + mas[1,n-1]);
+    }
+}
