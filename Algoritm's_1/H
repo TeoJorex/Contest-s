@@ -1,0 +1,66 @@
+using System.Collections;
+using System.Collections.Generic;
+using System;
+using System.Linq;
+using System.Text;
+
+namespace zadach
+{
+    class Program
+    {
+        static void Main()
+        {
+            int n = int.Parse(Console.ReadLine());
+            string input = Console.ReadLine();
+
+            int[] charCount = new int[26]; // Assuming only uppercase English letters are used
+
+            foreach (char c in input)
+            {
+                if (char.IsLetter(c) && char.IsUpper(c))
+                {
+                    charCount[c - 'A']++;
+                }
+            }
+
+            List<char> firstHalf = new List<char>();
+            List<char> secondHalf = new List<char>();
+
+            for (int i = 0; i < 26; i++)
+            {
+                int halfCount = charCount[i] / 2;
+                for (int j = 0; j < halfCount; j++)
+                {
+                    firstHalf.Add((char)('A' + i));
+                    secondHalf.Insert(0, (char)('A' + i));
+                }
+            }
+
+            char? middle = null;
+            for (int i = 0; i < 26; i++)
+            {
+                if (charCount[i] % 2 == 1)
+                {
+                    middle = (char)('A' + i);
+                    break;
+                }
+            }
+
+            StringBuilder palindrome = new StringBuilder(n);
+            foreach (char c in firstHalf)
+            {
+                palindrome.Append(c);
+            }
+            if (middle != null)
+            {
+                palindrome.Append(middle);
+            }
+            foreach (char c in secondHalf)
+            {
+                palindrome.Append(c);
+            }
+
+            Console.WriteLine(palindrome);
+        }
+    }
+}
