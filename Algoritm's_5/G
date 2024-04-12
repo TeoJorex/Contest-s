@@ -1,0 +1,130 @@
+﻿using System.Collections;
+using System.Collections.Generic;
+using System;
+using System.Linq;
+using System.Text;
+using System.Numerics;
+
+namespace zadach
+{
+    class Program
+    {
+        static void Main()
+        {
+            var n = Console.ReadLine();
+            var line_1 = Console.ReadLine().Split(" ");
+            n = Console.ReadLine();
+            var line_2 = Console.ReadLine().Split(" ");
+            Random random = new Random();
+            Dictionary<string, int> random_hash = new Dictionary<string, int>();
+            Dictionary<string, int> map = new Dictionary<string, int>();
+            var index = 0;
+            for (int i = 0; i < line_1.Length; i++)
+            {
+                if (map.ContainsKey(line_1[i]) == false)
+                {
+                    map.Add(line_1[i], index);
+                    random_hash.Add(line_1[i], random.Next(1,1000000000));
+                    index++;
+                }
+            }
+            var cheker = 0;
+            for (int i = 0; i < line_2.Length; i++)
+            {
+                if (map.ContainsKey(line_2[i]) == false)
+                {
+                    map.Add(line_2[i], index);
+                    random_hash.Add(line_2[i], random.Next(1, 1000000000));
+                    index++;
+                }
+                else
+                {
+                    cheker++;
+                }
+            }
+
+
+
+            int[] max_1 = new int[line_1.Length]; 
+            max_1[0] = int.Parse(line_1[0]) + random_hash[line_1[0]];
+            for (int i = 1; i < line_1.Length; i++)
+            {
+                max_1[i] = int.Parse(line_1[i]) + random_hash[line_1[i]] + max_1[i-1];
+            }
+
+
+            int[] max_2 = new int[line_2.Length];
+            max_2[0] = int.Parse(line_2[0]) + random_hash[line_2[0]];
+            for (int i = 1; i < line_2.Length; i++)
+            {
+                max_2[i] = int.Parse(line_2[i]) + random_hash[line_2[i]] + max_2[i - 1];
+            }
+
+            var result = 0;
+            var l = 1;
+            var r = cheker+1;
+            var st = true;
+            while (l <= r)
+            {
+                var mid = 0;
+                if (st == true)
+                {
+                    mid = (l + r) / 2;
+                }
+                else
+                {
+                    mid = r;
+                }
+
+                Dictionary<int, bool> hash = MakeHash(max_1, mid);
+                if (CheckHash(max_2, hash, mid) == true)
+                {
+                    result = mid;
+                    l = mid + 1;
+                    st = true;
+                }
+                else
+                {
+                    r = r - 1;
+                    st = false;
+                }
+            }
+            Console.WriteLine(result);
+        }
+
+        public static Dictionary<int, bool> MakeHash(int[] mas, int mid)
+        {
+            Dictionary<int, bool> hash = new Dictionary<int, bool>();
+            for (int i = 0; i <= mas.Length - mid; i++)
+            {
+                var str = GetHash(mas, i, i + mid - 1);
+                if (hash.ContainsKey(str) == false)
+                {
+                    hash.Add(str, true);
+                }
+            }
+            return hash;
+        }
+
+        public static bool CheckHash(int[] mas, Dictionary<int, bool> hash, int mid)
+        {
+            for (int i = 0; i <= mas.Length - mid; i++)
+            {
+                if (hash.ContainsKey(GetHash(mas, i, i + mid - 1)))
+                {
+                    return true;
+                }
+            }
+            return false;
+        }
+
+        public static int GetHash(int[] mas, int l, int r)
+        {           
+            if (l == 0)
+            {
+                return mas[r];
+            }                              
+            return (mas[r] - mas[l - 1]); ;
+        }
+    }
+}
