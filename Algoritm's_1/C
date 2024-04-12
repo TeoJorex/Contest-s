@@ -1,0 +1,46 @@
+﻿using System.Collections;
+using System.Collections.Generic;
+using System;
+using System.Linq;
+
+namespace zadach
+{
+	class Tinkof
+	{
+		static void Main()
+		{
+			var n = Console.ReadLine();
+			var l = 1;
+			var r = int.Parse(n);
+			var m  = (r + l) / 2;
+			Console.WriteLine(m);
+			while (r != l+1 && r!=l)
+            {
+				var znak = Console.ReadLine();								
+				if(znak == "<")
+                {
+					r = m-1;
+                }
+                else
+                {
+					l = m;
+                }
+				m = (r + l) / 2;
+
+				if (r - l != 1 && r !=l)
+				{
+					Console.WriteLine(m);
+				}
+            }
+			Console.WriteLine(r);
+			if(Console.ReadLine() == "<")
+            {
+                Console.WriteLine($"! {l}");	
+            }
+            else
+            {
+				Console.WriteLine($"! {r}");
+			}
+		}
+	}
+}
