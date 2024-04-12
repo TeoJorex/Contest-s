@@ -1,0 +1,81 @@
+﻿using System;
+
+class Program
+{
+    static void Main()
+    {
+        string s = Console.ReadLine();
+        int n = s.Length;
+        int[,] dp = new int[n, n];
+        int[,] pos = new int[n, n];
+
+        for (int i = 0; i < n; i++)
+        {
+            for (int j = 0; j < n; j++)
+            {
+                if (i == j)
+                {
+                    dp[i, j] = 1;
+                }
+            }
+        }
+
+        for (int right = 0; right < n; right++)
+        {
+            for (int left = right; left >= 0; left--)
+            {
+                if (left == right)
+                {
+                    dp[left, right] = 1;
+                }
+                else
+                {
+                    int min = int.MaxValue;
+                    int mink = -1;
+                    bool b1 = s[left] == '(' && s[right] == ')';
+                    bool b2 = s[left] == '[' && s[right] == ']';
+                    bool b3 = s[left] == '{' && s[right] == '}';
+                    if (b1 || b2 || b3)
+                    {
+                        min = dp[left + 1, right - 1];
+                    }
+                    for (int k = left; k < right; k++)
+                    {
+                        if (min > dp[left, k] + dp[k + 1, right])
+                        {
+                            min = dp[left, k] + dp[k + 1, right];
+                            mink = k;
+                        }
+                    }
+                    dp[left, right] = min;
+                    pos[left, right] = mink;
+                }
+            }
+        }
+
+        void Rec(int l, int r)
+        {
+            int temp = r - l + 1;
+            if (dp[l, r] == temp)
+            {
+                return;
+            }
+            if (dp[l, r] == 0)
+            {
+                Console.Write(s.Substring(l, r - l + 1));
+                return;
+            }
+            if (pos[l, r] == -1)
+            {
+                Console.Write(s[l]);
+                Rec(l + 1, r - 1);
+                Console.Write(s[r]);
+                return;
+            }
+            Rec(l, pos[l, r]);
+            Rec(pos[l, r] + 1, r);
+        }
+
+        Rec(0, n - 1);
+    }
+}
