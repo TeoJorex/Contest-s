@@ -1,0 +1,48 @@
+﻿using System.Collections;
+using System.Collections.Generic;
+using System;
+using System.Linq;
+using System.Text;
+
+namespace zadach
+{
+    class Program
+    {
+        static void Main()
+        {
+            var N = long.Parse(Console.ReadLine());
+            List<(long,string)> list = new List<(long,string)>();
+            for(long i = 0; i < N; i++)
+            {
+                var line  = Console.ReadLine().Split(" ");
+                list.Add((long.Parse(line[0]),"+"));
+                list.Add((long.Parse(line[1]),"-"));
+            }
+            list.Sort();
+            long result = 0;
+            long start = list[0].Item1;
+            long check = 1;
+            for(int i = 1; i < list.Count; i++)
+            {
+                if(list[i].Item2 == "+")
+                {
+                    check++;
+                    if(check == 1)
+                    {
+                        start = list[i].Item1;
+                    }
+                }
+                else
+                {
+                    check--;
+                    if(check == 0)
+                    {
+                        result += (list[i].Item1 - start);
+                    }
+
+                }
+            }
+            Console.WriteLine(result);
+        }    
+    }
+}
