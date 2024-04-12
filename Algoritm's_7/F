@@ -1,0 +1,47 @@
+using System;
+using System.Collections.Generic;
+using System.Numerics;
+using System.Text;
+
+class Tinkoff
+{
+    public static void Main()
+    {
+        var line = Console.ReadLine().Split(" ");
+        var n = int.Parse(line[0]);
+        var m = int.Parse(line[1]);
+        int[,] mas = new int[n+1,m+1];
+        int[,] kv = new int[n+1,m+1];
+        for (int i = 1; i <= n; i++)
+        {
+            line = Console.ReadLine().Split(" ");
+            for(int j = 1; j <= m; j++)
+            {
+                 mas[i,j] = int.Parse(line[j-1]);
+            }
+        }
+        var max = 0;
+        var i_max = 0;
+        var j_max = 0;
+        for(int i = 1; i <= n; i++)
+        {
+            for(int j = 1; j <= m; j++)
+            {
+                if(mas[i,j] != 0)
+                {
+                    kv[i, j] = Math.Min(kv[i-1,j-1], kv[i, j - 1]);
+                    kv[i, j] = Math.Min(kv[i, j], kv[i - 1, j]);
+                    kv[i, j]++;
+                    if(kv[i, j] > max)
+                    {
+                        max = kv[i, j];
+                        i_max = i;  
+                        j_max = j;  
+                    }
+                }
+            }
+        }
+        Console.WriteLine(max);
+        Console.WriteLine((i_max-max+1).ToString()+" "+(j_max - max+1).ToString());
+    }         
+}
