@@ -1,0 +1,69 @@
+import sys
+sys.setrecursionlimit(10**6)
+
+class Node:
+    def __init__(self, item):
+        self.data = item
+        self.left = None
+        self.right = None
+
+class AVLTree:
+    def __init__(self):
+        self.root = None
+
+    def is_avl_util(self, node, mini, maxi):
+        if node is None:
+            return True
+
+        if node.data < mini or node.data > maxi:
+            return False
+
+        lh = self.height(node.left)
+        rh = self.height(node.right)
+
+        if abs(lh - rh) > 1:
+            return False
+
+        return self.is_avl_util(node.left, mini, node.data - 1) and self.is_avl_util(node.right, node.data + 1, maxi)
+
+    def height(self, node):
+        if node is None:
+            return 0
+
+        return max(self.height(node.left), self.height(node.right)) + 1
+
+    def is_avl(self, n):
+        return self.is_avl_util(self.root, -n, n)
+
+if __name__ == "__main__":
+    line = input().split()
+    N = int(line[0])
+    head_id = int(line[1])
+    nodes_map = {}
+    tree = AVLTree()
+    tree.root = Node(head_id)
+    nodes_map[head_id] = tree.root
+
+    for i in range(N):
+        line = input().split()
+        i = int(i)
+        if i not in nodes_map:
+            head = Node(i)
+            nodes_map[i] = head
+        if line[0] != "-1":
+            l_id = int(line[0])
+            if l_id not in nodes_map:
+                left = Node(l_id)
+                nodes_map[l_id] = left
+            nodes_map[i].left = nodes_map[l_id]
+        if line[1] != "-1":
+            r_id = int(line[1])
+            if r_id not in nodes_map:
+                right = Node(r_id)
+                nodes_map[r_id] = right
+            nodes_map[i].right = nodes_map[r_id]
+
+    if tree.is_avl(N):
+        print("1")
+    else:
+        print("0")
