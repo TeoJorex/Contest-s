@@ -1,0 +1,42 @@
+def find_max_mult_subarray(arr):
+    n = len(arr)
+    prefix_sum = [0] * (n + 1)
+    for i in range(n):
+        prefix_sum[i + 1] = prefix_sum[i] + arr[i]
+    
+    stack = []
+    min_stack = []
+    max_mult = 0
+    start = -1
+    end = -1
+    
+    for i in range(n + 1):
+        while stack and (i == n or arr[i] < arr[stack[-1]]):
+            j = stack.pop()
+            if min_stack and min_stack[-1] == j:
+                min_stack.pop()
+            if stack:
+                left = stack[-1]
+            else:
+                left = -1
+            current_mult = (prefix_sum[i] - prefix_sum[left + 1]) * arr[j]
+            if current_mult > max_mult:
+                max_mult = current_mult
+                start = left + 1
+                end = i - 1
+        if i < n:
+            stack.append(i)
+            if not min_stack or arr[i] < arr[min_stack[-1]]:
+                min_stack.append(i)
+    
+    return max_mult, arr[start:end+1]
+
+# Ввод
+n = int(input())
+arr = list(map(int, input().split()))
+
+# Поиск подотрезка
+max_mult, subarray = find_max_mult_subarray(arr)
+
+# Вывод ответа
+print(max_mult)
