@@ -1,0 +1,86 @@
+﻿using System.Collections;
+using System.Collections.Generic;
+using System;
+using System.Linq;
+using System.Text;
+
+namespace zadach
+{
+    class Program
+    {
+        static void Main()
+        {
+            List<int> heap = new List<int>();   
+            StringBuilder sb = new StringBuilder();
+            var n = int.Parse(Console.ReadLine());
+            for(int i = 0; i < n; i++)
+            {
+                var line = Console.ReadLine().Split(" ");
+                if(line[0] == "0")
+                {
+                    var x = int.Parse(line[1]);
+                    heap.Add(x);
+                    var help_index = heap.Count - 1;                   
+                    RecursiveAdd(heap,x, help_index);
+                }
+                else
+                {
+                    sb.AppendLine(heap[0].ToString());
+                    
+                    heap[0] = heap[heap.Count - 1];
+                    heap.RemoveAt(heap.Count - 1);
+                    var help_index = 0;
+                    if(heap.Count == 0) { continue; }
+                    RecursiveBuild(heap,heap.ElementAt(0),help_index);
+                }
+            } 
+            Console.WriteLine(sb);
+        }  
+        public static void RecursiveAdd(List<int> heap,int x,int help_index)
+        {           
+            if(help_index >= 0 && heap[(help_index-1)/2] < x)
+            {
+                var help = heap.ElementAt((help_index-1)/2);
+                heap[(help_index-1)/2] = x;
+                heap[help_index] = help;
+                help_index = (help_index - 1) / 2;
+                RecursiveAdd(heap,x,help_index);
+            }
+            else
+            {
+                return;
+            }
+        }
+
+        public static void RecursiveBuild(List<int> heap, int x, int help_index)
+        {
+            if(help_index*2+2 <= heap.Count)
+            {
+                if (help_index * 2 + 3 <= heap.Count && heap[help_index * 2 + 2] > heap[help_index * 2 + 1] && x < heap[help_index * 2 + 2])
+                {
+                    var help = heap[help_index * 2 + 2];
+                    heap[help_index * 2 + 2] = x;
+                    heap[help_index] = help;
+                    help_index = help_index * 2 + 2;
+                    RecursiveBuild(heap, x, help_index);
+                }
+                else
+                {
+                    if(x > heap[help_index * 2 + 1])
+                    {
+                        return ;
+                    }
+                    var help = heap[help_index * 2 + 1];
+                    heap[help_index * 2 + 1] = x;
+                    heap[help_index] = help;
+                    help_index = help_index * 2 + 1;
+                    RecursiveBuild(heap, x, help_index);
+                }
+            }
+            else
+            {
+                return;
+            }
+        }
+    }
+}
