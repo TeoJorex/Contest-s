@@ -1,0 +1,41 @@
+﻿using System.Collections;
+using System.Collections.Generic;
+using System;
+using System.Linq;
+using System.Text;
+
+namespace zadach
+{
+    class Program
+    {
+        static void Main()
+        {
+            var N = long.Parse(Console.ReadLine());
+            long[] pref_sum = new long[N + 1];
+            long[] xor = new long[N + 1];
+            var line = Console.ReadLine().Split(" ");
+
+            StringBuilder sb = new StringBuilder();
+            for (long i = 0; i < N; i++)
+            {
+                var x = long.Parse(line[i]);
+                pref_sum[i + 1] = x + pref_sum[i];
+                xor[i + 1] = x ^ xor[i];
+            }
+            N = long.Parse(Console.ReadLine());
+            for (long i = 0; i < N; i++)
+            {
+                line = Console.ReadLine().Split(" ");
+                if (line[0] == "1")
+                {
+                    sb.AppendLine((pref_sum[long.Parse(line[2])] - pref_sum[long.Parse(line[1]) - 1]).ToString());
+                }
+                else
+                {
+                    sb.AppendLine((xor[long.Parse(line[2])] ^ xor[long.Parse(line[1]) - 1]).ToString());
+                }
+            }
+            Console.WriteLine(sb);
+        }
+    }
+}
