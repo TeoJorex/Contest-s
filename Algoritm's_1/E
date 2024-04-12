@@ -1,0 +1,43 @@
+﻿using System.Collections;
+using System.Collections.Generic;
+using System;
+using System.Linq;
+
+namespace zadach
+{
+	class Tinkof
+	{
+		static void Main()
+		{
+			var line = Console.ReadLine().Split(" ");
+			var a = double.Parse(line[0]);
+			var b = double.Parse(line[1]);
+			var c = double.Parse(line[2]);
+			var d = double.Parse(line[3]);
+			double r = 1;
+			while (f(a,b,c,d,r) * f(a, b, c, d, -r) >= 0)
+			{
+				r *= 2;
+			}
+			double l = -r;
+			while(r - l > 0.0001)
+            {
+				double m = (r + l) /2;
+				if(f(a,b,c,d,m) * f(a,b,c,d,r) > 0)
+                {
+					r = m;
+                }
+                else
+                {
+					l = m;
+                }
+            }
+			Console.WriteLine(l);
+		}
+		static double f(double a, double b, double c, double d, double x)
+		{
+			return a * x * x * x + b * x * x + c * x + d;
+		}
+	}
+	
+}
