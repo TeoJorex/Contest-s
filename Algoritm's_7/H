@@ -1,0 +1,41 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Text;
+
+class MainClass
+{
+    public static void Main()
+    {
+        var n = int.Parse(Console.ReadLine());
+        var line = Console.ReadLine().Split(" ");
+        int[] mas = new int[line.Length];
+        var check = 0;
+        for(int i = 0; i < line.Length; i++)
+        {
+            for(int j = i;j >= 0; j--)
+            {
+                if (int.Parse(line[i]) > int.Parse(line[j]) && mas[i] < mas[j])
+                {
+                    mas[i] = mas[j];
+                }
+            }
+            mas[i] ++;
+            if(mas[i] > check)
+            {
+                check = mas[i];
+            }
+        }
+        Console.WriteLine(check);
+        string ex = "";
+        for(int i = mas.Length-1; i >=0; i--)
+        {
+            if(mas[i] == check)
+            {
+                check--;
+                ex = line[i] + " " + ex;
+            }
+        }
+        Console.WriteLine(ex); 
+
+    }
+}
