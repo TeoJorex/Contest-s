@@ -1,0 +1,110 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Text;
+
+class Program
+{  
+    static void Main()
+    {
+        var line = Console.ReadLine().Split(" ");
+        var n = int.Parse(line[0]);
+        var m = int.Parse(line[1]);
+        line = Console.ReadLine().Split(" ");
+        var arr = new long[n];
+        for (int i = 0; i < n; i++)
+        {
+            arr[i] = long.Parse(line[i]);
+        }
+        SegmentTree tree = new SegmentTree(arr);
+        List<long> list = new List<long>();
+        for(int i = 0; i < m; i++)
+        {
+            var ln = Console.ReadLine().Split(" ");
+            if(ln[0] == "1")
+            {
+                var index = int.Parse(ln[1]);
+                var new_value = int.Parse(ln[2]);
+                tree.Update(index,new_value,1,0,n);
+            }
+            else
+            {
+                tree.sum = 0;
+                var left = int.Parse(ln[1]);
+                var right = int.Parse(ln[2]);
+                tree.CheckSum(left,right,1,0,n);
+                list.Add(tree.sum);
+            }
+        }
+        for(int i = 0; i < list.Count; i++)
+        {
+            Console.WriteLine(list[i]);
+        }
+    }
+
+    class SegmentTree
+    {
+        public long[] arr;
+        public long[] tree;
+        public long sum;
+
+        public SegmentTree(long[] arr)
+        {
+            this.arr = arr;
+            tree = new long[4 * arr.Length];
+            Build(1, 0, arr.Length);
+        }      
+
+        private void Build(int vertex,int left,int right)
+        {
+            if(left == right - 1)
+            {
+                tree[vertex] = arr[left];
+                return;
+            }
+            else
+            {
+                var mid = (left + right) / 2;
+                Build(vertex * 2, left, mid);
+                Build(vertex * 2 + 1, mid, right);
+            }
+            tree[vertex] = tree[vertex*2] + tree[vertex*2 + 1];
+        } 
+
+        public void Update(int index,int new_value,int vertex,int left,int right)
+        {
+            if(left == right-1 && index == left)
+            {
+                tree[vertex] = new_value;
+                return;
+            }
+            else
+            {
+                var mid = (left + right) / 2;
+                if(index < mid)
+                {
+                    Update(index,new_value,vertex*2,left,mid);
+                }
+                else
+                {
+                    Update(index, new_value, vertex * 2+1, mid, right);
+                }
+                tree[vertex] = tree[vertex * 2] + tree[vertex * 2 + 1];
+            }
+        }
+
+        public void CheckSum(int left_index,int right_index, int vertex,int left,int right)
+        {
+            if(left >= left_index && right <= right_index)
+            {
+                sum += tree[vertex];
+                return;
+            }
+            if((left <= left_index && left_index <= right -1 ) ||  (left <= right_index - 1 && right_index <= right))
+            {
+                var mid = (left + right) / 2;
+                CheckSum( left_index, right_index, vertex * 2, left, mid);
+                CheckSum( left_index, right_index, vertex * 2 + 1, mid, right);
+            }
+        }
+    } 
+}
