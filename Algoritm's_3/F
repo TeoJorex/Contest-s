@@ -1,0 +1,191 @@
+﻿using System.Collections;
+using System.Collections.Generic;
+using System;
+using System.Linq;
+using System.Text;
+
+namespace zadach
+{
+    class Program
+    {
+        static void Main()
+        {
+            SortedDictionary<long, bool> map = new SortedDictionary<long, bool>();
+            var N = int.Parse(Console.ReadLine());
+            var save = "";
+            long result = -1;
+            StringBuilder sb = new StringBuilder();
+
+            AVLTree tree = new AVLTree();
+
+            for (int i = 0; i < N; i++)
+            {
+                var line = Console.ReadLine().Split(" ");
+                if(line[0] == "+")
+                {
+                    var num = long.Parse(line[1]);
+                    if(save == "?")
+                    {
+                        num = (num + result)%1000000000;
+                    }
+                    if(map.ContainsKey(num) == false)
+                    {
+                        map.Add(num, true);
+                        tree.Add(num);
+                    }
+                    save = "+";
+                }
+                else
+                {
+                    save = "?";
+                    long check = long.Parse(line[1]);
+                    result = tree.Next(check);
+                    sb.AppendLine(result.ToString());
+                }
+            }
+            Console.WriteLine(sb);
+        }
+    }
+
+    class Node
+    {
+        public long Key;
+        public Node Left, Right;
+        public long Height;
+
+        public Node(long item)
+        {
+            Key = item;
+            Left = Right = null;
+            Height = 1;
+        }
+    }
+
+    class AVLTree
+    {
+        Node root;
+
+        long Height(Node node)
+        {
+            if (node == null)
+                return 0;
+            return node.Height;
+        }
+
+        long Max(long a, long b)
+        {
+            return (a > b) ? a : b;
+        }
+
+        long GetBalance(Node node)
+        {
+            if (node == null)
+                return 0;
+            return Height(node.Left) - Height(node.Right);
+        }
+
+        Node RotateRight(Node y)
+        {
+            Node x = y.Left;
+            Node T2 = x.Right;
+
+            x.Right = y;
+            y.Left = T2;
+
+            y.Height = Max(Height(y.Left), Height(y.Right)) + 1;
+            x.Height = Max(Height(x.Left), Height(x.Right)) + 1;
+
+            return x;
+        }
+
+        Node RotateLeft(Node x)
+        {
+            Node y = x.Right;
+            Node T2 = y.Left;
+
+            y.Left = x;
+            x.Right = T2;
+
+            x.Height = Max(Height(x.Left), Height(x.Right)) + 1;
+            y.Height = Max(Height(y.Left), Height(y.Right)) + 1;
+
+            return y;
+        }
+
+        Node Insert(Node node, long key)
+        {
+            if (node == null)
+                return new Node(key);
+
+            if (key < node.Key)
+                node.Left = Insert(node.Left, key);
+            else if (key > node.Key)
+                node.Right = Insert(node.Right, key);
+            else
+                return node;
+
+            node.Height = 1 + Max(Height(node.Left), Height(node.Right));
+
+            long balance = GetBalance(node);
+
+            if (balance > 1 && key < node.Left.Key)
+                return RotateRight(node);
+
+            if (balance < -1 && key > node.Right.Key)
+                return RotateLeft(node);
+
+            if (balance > 1 && key > node.Left.Key)
+            {
+                node.Left = RotateLeft(node.Left);
+                return RotateRight(node);
+            }
+
+            if (balance < -1 && key < node.Right.Key)
+            {
+                node.Right = RotateRight(node.Right);
+                return RotateLeft(node);
+            }
+
+            return node;
+        }
+
+        void PreOrder(Node node)
+        {
+            if (node != null)
+            {
+                Console.Write(node.Key + " ");
+                PreOrder(node.Left);
+                PreOrder(node.Right);
+            }
+        }
+
+        public void Add(long key)
+        {
+            root = Insert(root, key);
+        }
+
+        public long Next(long key)
+        {
+            Node current = root;
+            long result = -1;
+
+            while (current != null)
+            {
+                if (current.Key >= key)
+                {
+                    result = current.Key;
+                    current = current.Left;
+                }
+                else
+                    current = current.Right;
+            }
+
+            return result;
+        }
+
+        public void PrintPreOrder()
+        {
+            PreOrder(root);
+        }
+    }
+}
