@@ -1,0 +1,23 @@
+from collections import deque
+ 
+ 
+def mininslidingwindow(A, okno):
+    mins = ""
+    deq = deque()
+    for i in range(len(A)):
+        if (len(deq) > 0) and (deq[0] <= i - okno):
+            deq.popleft()  # слишком старый индекс
+        while len(deq) > 0 and A[deq[-1]] >= A[i]:
+            deq.pop()
+            # удалить элементы, у которых уже нет шансов стать минимумом в окошке
+ 
+        deq.append(i)
+ 
+        if i >= okno - 1:
+            mins+= str(A[deq[0]])+ " " # голова дека - минимум в текущем окне
+    return mins
+ 
+ 
+n, okno = list(map(int, input().split()))
+arr = list(map(int, input().split()))
+print(mininslidingwindow(arr, okno))
