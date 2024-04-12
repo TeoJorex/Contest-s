@@ -1,0 +1,50 @@
+using System.Collections;
+using System.Collections.Generic;
+using System;
+using System.Linq;
+using System.Text;
+
+namespace zadach
+{
+    class Program
+    {
+        static void Main()
+        {
+            var N = int.Parse(Console.ReadLine());
+            LinkedList<string> deq = new LinkedList<string>();
+            StringBuilder stringBuilder = new StringBuilder();
+            int delete = 0;
+            int index = 0;
+            Dictionary<string, int> map = new Dictionary<string, int>();
+            for (int i = 0; i < N; i++)
+            {
+                var line = Console.ReadLine().Split(" ");
+                switch (line[0])
+                {
+                    case "1":
+                        deq.AddLast(line[1]);
+                        map.Add(line[1], index);
+                        index++;
+                        break;
+                    case "2":
+                        map.Remove(deq.First());                        
+                        deq.RemoveFirst();
+                        delete++;
+                        break;
+                    case "3":
+                        map.Remove(deq.Last());                        
+                        deq.RemoveLast();
+                        index--;
+                        break;
+                    case "4":                      
+                        stringBuilder.AppendLine((map[line[1]] - delete).ToString());
+                        break;
+                    case "5":
+                        stringBuilder.AppendLine(deq.First());
+                        break;
+                }
+            }
+            Console.WriteLine(stringBuilder);
+        }       
+    }
+}
