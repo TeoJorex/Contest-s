@@ -1,0 +1,53 @@
+﻿using System.Collections;
+using System.Collections.Generic;
+using System;
+using System.Linq;
+using System.Text;
+
+namespace zadach
+{
+    class Program
+    {
+        static void Main()
+        {
+            StringBuilder sb = new StringBuilder();
+            var s_mini = Console.ReadLine();
+            var s = Console.ReadLine();
+            var z_line = s_mini + "#" + s;
+            int[] z_int = new int[z_line.Length];
+            int l = 0, r = 0;
+            string exit = "";
+            var check = 0;
+            for (int i = s_mini.Length + 1; i < z_line.Length; i++)
+            {
+                if (i <= r)
+                {
+                    z_int[i] = Math.Min(r - i + 1, z_int[i - l]);
+                }
+                var mistake = 0;
+                while (i + z_int[i] < z_line.Length && (z_line[z_int[i]] == z_line[i + z_int[i]] || (mistake < 1 && z_line[z_int[i]].ToString() != "#")))
+                {
+                    if (z_line[z_int[i]] != z_line[i + z_int[i]])
+                    {
+                        mistake++;
+                    }
+                    z_int[i]++;
+                    if (z_int[i] == s_mini.Length)
+                    {
+                        exit += (i - s_mini.Length).ToString() + " ";
+                        check++;
+                    }
+                }
+                mistake = 0;
+                if (i + z_int[i] - 1 > r)
+                {
+                    r = i + z_int[i] - 1;
+                    l = i;
+                }
+            }
+            sb.AppendLine(check.ToString());
+            sb.AppendLine(exit);
+            Console.WriteLine(sb);
+        }
+    }
+}
