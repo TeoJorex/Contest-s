@@ -1,0 +1,76 @@
+using System;
+using System.Collections.Generic;
+using System.Text;
+
+class MainClass
+{
+    public static void Main(string[] args)
+    {     
+        int N = int.Parse(Console.ReadLine());
+        var input  = Console.ReadLine().Split(" ");
+        int x1 = int.Parse(input[0]);
+        int y1 = int.Parse(input[1]);
+        input = Console.ReadLine().Split(" ");
+        int x2 = int.Parse(input[0]);
+        int y2 = int.Parse(input[1]);
+        Dictionary<(int, int), (int, int)> path = new Dictionary<(int, int), (int, int)>();
+
+        int[,] board = new int[N+1, N+1];
+        for(int i = 1; i < N+1; i++)
+        {
+            for(int j = 1; j < N+1; j++)
+            {
+                board[i,j] = int.MaxValue;
+            }
+        }        
+        int[,] moves = new int[,] { {-2,1} ,{ -2, -1 }, { 2, 1 } ,{ 2, -1 },{-1,2}, { -1, -2 }, { 1, 2 }, { 1, -2 }};
+        LinkedList<(int,int)> list = new LinkedList<(int, int)>();
+        list.AddLast((x1, y1));
+        path.Add((x1,y1),(x1, y1));
+        board[x1, y1] = 0;
+        while(list.Count != 0)
+        {
+            var coord = list.Last.Value;
+            list.RemoveLast();
+            for(int i = 0; i < 8; i++)
+            {
+                int newX = coord.Item1 + moves[i,0];
+                int newY = coord.Item2 + moves[i,1];
+                if(newX <= N && newX >= 1 && newY <= N && newY >= 1)
+                {
+                    if(board[newX,newY] > board[coord.Item1,coord.Item2]+ 1)
+                    {
+                        board[newX, newY] = board[coord.Item1, coord.Item2] + 1;
+                        if(path.ContainsKey((newX,newY)) == false)
+                        {
+                            path.Add((newX, newY), (coord.Item1, coord.Item2));
+                        }
+                        else
+                        {
+                            path[(newX, newY)] = (coord.Item1, coord.Item2);
+                        }
+                        list.AddLast((newX, newY));
+                    }
+                }
+
+            }
+        }
+        var start = (x2, y2);
+        var end = (x1, y1);
+        Stack<(int,int)> stack = new Stack<(int,int)> ();
+        while(start != end)
+        {
+            stack.Push(start);
+            start = path[start];
+        }
+        Console.WriteLine(stack.Count);
+        StringBuilder sb = new StringBuilder();
+        sb.AppendLine(x1.ToString() + " " + y1.ToString());
+        while (stack.Count != 0)
+        {
+            var z = stack.Pop();
+            sb.AppendLine(z.Item1.ToString() + " " + z.Item2.ToString());
+        }
+        Console.WriteLine(sb.ToString());
+    }
+}
