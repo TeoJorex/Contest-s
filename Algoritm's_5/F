@@ -1,0 +1,99 @@
+﻿using System.Collections;
+using System.Collections.Generic;
+using System;
+using System.Linq;
+using System.Text;
+
+namespace zadach
+{
+    class Program
+    {
+        static void Main()
+        {           
+            var s = Console.ReadLine();
+            long[] prefiks_hash = new long[s.Length];
+            long[] pow = new long[s.Length];
+            const int k = 31;
+
+            prefiks_hash[0] = s[0];
+            pow[0] = 1;
+
+            for (int i = 1; i < s.Length; i++)
+            {
+                pow[i] = pow[i - 1] * k;
+            }
+            for (int i = 1; i < s.Length; i++)
+            {
+                prefiks_hash[i] = prefiks_hash[i - 1] + pow[i] * s[i];
+            }
+
+            long[] rev_hash = new long[s.Length];
+            rev_hash[s.Length-1] = s[s.Length-1];
+            for(int i = s.Length-2,j = 1;i>=0; i--, j++)
+            {
+                rev_hash[i] = rev_hash[i+1] + pow[j] * s[i];
+            }
+            int[] oddCount = new int[s.Length]; 
+            for(int i = 0; i < s.Length; i++)
+            {
+                int left = 1, right = Math.Min(i+1,s.Length - i);
+                while(left <= right)
+                {
+                    int mid = (left + right)/2;
+                    if(isPalindrome(prefiks_hash,rev_hash,pow, i - mid + 1,i+mid - 1))
+                    {
+                        oddCount[i] = mid;
+                        left = mid + 1;
+                    }
+                    else
+                    {
+                        right = mid - 1;
+                    }
+                }
+            }
+            int[] evenCount = new int[s.Length];
+            for (int i = 0; i < s.Length; i++)
+            {
+                int left = 1, right = Math.Min(i, s.Length - i);
+                while (left <= right)
+                {
+                    int mid = (left + right) / 2;
+                    if (isPalindrome(prefiks_hash, rev_hash, pow, i - mid, i + mid - 1))
+                    {
+                        evenCount[i] = mid;
+                        left = mid + 1;
+                    }
+                    else
+                    {
+                        right = mid - 1;
+                    }
+                }
+            }
+            long exit = 0;
+            for(int i = 0; i < evenCount.Length; i++)
+            {
+                exit += evenCount[i] + oddCount[i];
+            }
+            Console.WriteLine(exit);
+        }
+
+        static long getHash(long[] prefiks_hash, int L, int R)
+        {
+            long result = prefiks_hash[R];
+            if (L > 0) result -= prefiks_hash[L - 1];
+            return result;
+        }
+
+        static long Reverse_getHash(long[] rh,int L,int R)
+        {
+            long result = rh[L];
+            if(R < rh.Length - 1) result -= rh[R + 1];
+            return result;
+        }
+
+        static bool isPalindrome(long[] h,long[] rh,long[] pow ,int L,int R)
+        {
+            return getHash(h,L,R) * pow[h.Length - R - 1 ] == Reverse_getHash(rh,L,R)*pow[L];
+        }
+    }
+}
