@@ -1,0 +1,55 @@
+using System.Collections;
+using System.Collections.Generic;
+using System;
+using System.Linq;
+using System.Text;
+
+namespace zadach
+{
+    class Program
+    {
+        static void Main()
+        {
+            var line =Console.ReadLine().Split(" ");
+            var N = long.Parse(line[0]);
+            var K = long.Parse(line[1]);
+            long[] stalls = Console.ReadLine().Split(" ").Select(long.Parse).ToArray();
+            long l = 1;
+            long r = stalls[stalls.Length-1] - stalls[0];
+            long result = 0;
+            while (r >= l)
+            {
+                long mid = l + (r - l) / 2;
+                if (CanPlaceCow(stalls, K, mid))
+                {
+                    result = mid;
+                    l = mid+1;
+                }
+                else
+                {
+                    r = mid-1;
+                }
+            }
+            Console.WriteLine(result);
+        }
+
+        static bool CanPlaceCow(long[] stalls, long cows, long shag)
+        {
+            long check_cows = 1;
+            long check_index = 0;
+            for(long i = 1; i < stalls.Length; i++)
+            {
+                if(stalls[i] - stalls[check_index] >= shag)
+                {
+                    check_cows++;
+                    check_index = i;
+                    if(check_cows == cows)
+                    {
+                        return true;
+                    }
+                }               
+            }
+            return false;
+        }
+    }
+}
