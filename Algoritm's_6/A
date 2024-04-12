@@ -1,0 +1,53 @@
+import sys
+sys.setrecursionlimit(300000)
+
+class Graph:
+    def __init__(self, v):
+        self.V = v
+        self.adj = [[] for _ in range(v)]
+
+    def add_edge(self, v, w):
+        self.adj[v - 1].append(w - 1)
+        self.adj[w - 1].append(v - 1)
+
+    def dfs_util(self, v, visited, component):
+        visited[v] = True
+        component.append(v + 1)
+
+        for i in self.adj[v]:
+            if not visited[i]:
+                self.dfs_util(i, visited, component)
+
+    def find_connected_components(self):
+        visited = [False] * self.V
+        components = []
+
+        for v in range(self.V):
+            if not visited[v]:
+                component = []
+                self.dfs_util(v, visited, component)
+                components.append(component)
+
+        return components
+
+
+if __name__ == "__main__":
+    input_data = input().split()
+    N = int(input_data[0])
+    M = int(input_data[1])
+
+    graph = Graph(N)
+
+    for _ in range(M):
+        input_data = input().split()
+        v = int(input_data[0])
+        w = int(input_data[1])
+        graph.add_edge(v, w)
+
+    components = graph.find_connected_components()
+
+    print(len(components))
+    for component in components:
+        print(len(component))
+        component.sort()
+        print(" ".join(map(str, component)))
