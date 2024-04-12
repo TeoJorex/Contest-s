@@ -1,0 +1,71 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Text;
+
+class MainClass
+{
+    public static void Main()
+    {     
+        Dictionary<string, List<string>> dic = new Dictionary<string, List<string>>();
+        Dictionary<string, int> path_points = new Dictionary<string, int>();
+        var n = int.Parse(Console.ReadLine());
+        for(int i = 0; i < n; i++)
+        {
+            var line  = Console.ReadLine().Split(" ");
+            if(dic.ContainsKey(line[0]) == false)
+            {
+                dic[line[0]] = new List<string>();               
+            }
+            dic[line[0]].Add(line[2]);
+            if (path_points.ContainsKey(line[0]) == false)
+            {
+                path_points[line[0]] = int.MaxValue;
+            }
+            if(path_points.ContainsKey(line[2]) == false)
+            {
+                path_points[line[2]] = int.MaxValue;
+            }
+        }
+        var start = Console.ReadLine();
+        var end = Console.ReadLine();
+        LinkedList<string> list = new LinkedList<string>();
+        list.AddLast(start);
+        if(path_points.ContainsKey(start) == false || path_points.ContainsKey(end) == false)
+        {
+            Console.WriteLine("-1");
+            return;
+        }
+        else
+        {
+            path_points[start] = 0;
+        }
+        while(list.Count > 0)
+        {
+            var st = list.Last.Value;
+            list.RemoveLast();
+            if (dic.ContainsKey(st))
+            {
+                foreach (var elem in dic[st])
+                {
+                    if (path_points[elem] > path_points[st] + 1)
+                    {
+                        path_points[elem] = path_points[st] + 1;
+                        if (elem != end)
+                        {
+                            list.AddLast(elem);
+                        }
+                    }
+                }
+            }
+        }
+        if(path_points[end] == int.MaxValue)
+        {
+            Console.WriteLine("-1");
+        }
+        else
+        {
+            Console.WriteLine(path_points[end]);
+        }
+       
+    }
+}
