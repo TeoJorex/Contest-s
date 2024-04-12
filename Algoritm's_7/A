@@ -1,0 +1,19 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Text;
+
+class MainClass
+{
+    public static void Main()
+    {
+        var n = Console.ReadLine();
+        var line = Console.ReadLine().Split(" ");
+        var stup = new int [line.Length+1];
+        stup[1] = int.Parse(line[0]);   
+        for(int i = 2; i <= line.Length; i++)
+        {
+            stup[i] = Math.Min(stup[i-1], stup[i-2]) + int.Parse(line[i-1]);
+        }
+        Console.WriteLine(stup[line.Length]);
+    }
+}
