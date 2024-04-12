@@ -1,0 +1,126 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Text;
+
+class MainClass
+{
+    public static void Main()
+    {     
+        var line = Console.ReadLine().Split(" ");
+        var n = int.Parse(line[0]);
+        var m = int.Parse(line[1]);
+        int[,] matrix = new int[n + 1, n + 1];
+        for(int i = 0; i < n+1; i++)
+        {
+            for(int j = 0; j < n+1; j++)
+            {
+                matrix[i, j] = 1000000;
+            }
+        }
+        var max = 0;
+        for(int i = 0; i < m; i++)
+        {
+            line = Console.ReadLine().Split(" ");
+            var s = int.Parse(line[0]);
+            var e = int.Parse(line[1]);
+            var len = int.Parse(line[2]);
+            matrix[s, e] = len;
+            matrix[e, s] = len;
+            matrix[e, e] = 0;
+            matrix[s, s] = 0;
+            max += len;
+        }
+        FloydWarshall(matrix, n);
+        var l = 1;
+        var r = max;
+        var result = 0;
+        while (r >= l)
+        {
+            var mid = (r + l) / 2;
+            var x = Check(matrix,mid,n);
+            if(x == -1)
+            {
+                l = mid + 1;             
+            }
+            else
+            {
+                r = mid - 1;
+                result = x;
+            }
+        }
+        Console.WriteLine(result);
+    }
+
+    public static void FloydWarshall(int[,] graph, int size)
+    {
+        for (int k = 1; k <= size; k++)
+        {
+            for (int i = 1; i <= size; i++)
+            {
+                for (int j = 1; j <= size; j++)
+                {
+                    if (graph[i, k] + graph[k, j] < graph[i, j])
+                    {
+                        graph[i, j] = graph[i, k] + graph[k, j];
+                    }
+                }
+            }
+        }     
+    }
+
+    public static int Check(int[,] matrix, int mid, int size)
+    {
+        for (int i = 1; i <= size; i++)
+        {
+            var check = true;
+            for(int j = 1; j <= size; j++)
+            {
+                if(matrix[i, j] > mid)
+                {
+                    check = false;
+                    break;
+                }
+            }
+            if(check == true)
+            {
+                return i;
+            }
+            
+        }
+        return -1;
+    }
+
+    //public static int Check(int[,] matrix,int mid,int size)
+    //{
+    //    for(int i = 1; i <= size; i++)
+    //    {
+    //        LinkedList<int> list = new LinkedList<int>();
+    //        int[] vis = new int[size];
+    //        list.AddLast(i);
+    //        vis[i] = 0;
+    //        var check = true;
+    //        while(list.Count > 0)
+    //        {
+    //            var elem = list.Last.Value;
+    //            list.RemoveLast();
+    //            for(int j = 1; j < size; j++)
+    //            {
+    //                if(matrix[i, j] != 1000000 && vis[j] == 0 && j != i)
+    //                {
+    //                    vis[j] = vis[elem] + matrix[i,j];
+    //                    if(vis[j] > mid)
+    //                    {
+    //                        check = false;
+    //                        break;
+    //                    }
+    //                }
+    //            }
+    //        }
+    //        if(check == true)
+    //        {
+    //            return i;
+    //        }
+    //    }
+    //    return -1;
+    //}
+}
