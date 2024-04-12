@@ -1,0 +1,77 @@
+using System.Collections;
+using System.Collections.Generic;
+using System;
+using System.Linq;
+using System.Text;
+
+namespace zadach
+{
+    class Program
+    {
+        static void Main()
+        {
+            var line = Console.ReadLine();
+            var n = line.Length;
+            var s = line + line;
+            long[] prefiks_hash = new long[s.Length];
+            long[] pow = new long[s.Length + 1];                  
+            const int k = 31;
+            const long mod = 1000000007;
+
+            prefiks_hash[0] = s[0];
+            pow[0] = 1;
+
+            for (int i = 1; i <= s.Length; i++)
+            {
+                pow[i] = pow[i - 1] * k;
+            }
+
+            for (int i = 1; i < s.Length; i++)
+            {
+                prefiks_hash[i] = prefiks_hash[i - 1] + pow[i] * s[i];
+            }
+
+            int bestPos = 0;           
+            for (int i = 1; i < n; i++)
+            {
+                int left = 1, right = n, length = 0;
+                // находим length - длину максимального общего префикса
+                while (left <= right)
+                {
+                    int middle = (left + right) / 2;
+                    if (getHash(prefiks_hash, bestPos, bestPos + middle - 1) * pow[i] ==
+                        getHash(prefiks_hash, i, i + middle - 1) * pow[bestPos])
+                    {
+                        length = middle;
+                        left = middle + 1;
+                    }
+                    else
+                    {
+                        right = middle - 1;
+                    }
+                }
+                if (length < n && s[i + length] < s[bestPos + length])
+                {
+                    bestPos = i;
+                }
+            }
+            if(bestPos == 0)
+            {
+                Console.WriteLine(line);
+            }
+            else
+            {
+                var x = line.Substring(bestPos);
+                var y = line.Substring(0,bestPos);
+                Console.WriteLine(x+y);
+            }
+            
+        }
+        static long getHash(long[] prefiks_hash, int L, int R)
+        {
+            long result = prefiks_hash[R];
+            if (L > 0) result -= prefiks_hash[L - 1];
+            return result;
+        }
+    }
+}
