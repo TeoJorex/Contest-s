@@ -1,0 +1,76 @@
+﻿using System.Collections;
+using System.Collections.Generic;
+using System;
+using System.Linq;
+using System.Text;
+
+namespace zadach
+{
+    class Program
+    {
+        static void Main()
+        {
+            var line = Console.ReadLine().Split(" ");
+            var N = long.Parse(line[0]);
+            var K = long.Parse(line[1]);
+            line = Console.ReadLine().Split(" ");
+            long r = 0;
+            long l = 0;
+            long[] mas = new long[N];
+            for(long i = 0; i < N; i++)
+            {
+                var a = long.Parse(line[i]);
+                mas[i] = a;
+                r += a;   
+                l = Math.Max(l, a);
+            }
+            long result = SplitArray(mas, K, l, r);
+            Console.WriteLine(result);  
+        }
+
+        static bool CanSplitArray(long[] nums, long k, long mid)
+        {
+            long count = 1;
+            long sum = 0;
+
+            foreach (long num in nums)
+            {
+                sum += num;
+                if (sum > mid)
+                {
+                    count++;
+                    sum = num;
+                }
+            }
+
+            return count <= k;
+        }
+
+        static long SplitArray(long[] nums, long k,long l,long r)
+        {
+            long left = l;
+            long right = r;
+
+            foreach (long num in nums)
+            {
+                left = Math.Max(left, num);
+                right += num;
+            }
+
+            while (left < right)
+            {
+                long mid = left + (right - left) / 2;
+                if (CanSplitArray(nums, k, mid))
+                {
+                    right = mid;
+                }
+                else
+                {
+                    left = mid + 1;
+                }
+            }
+
+            return left;
+        }
+    }
+}
