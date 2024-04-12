@@ -1,0 +1,62 @@
+﻿using System.Collections;
+using System.Collections.Generic;
+using System;
+using System.Linq;
+using System.Text;
+
+namespace zadach
+{
+    class Program
+    {
+        static void Main()
+        {
+            Stack<int> tupic = new Stack<int>();
+            Stack<int> put_in = new Stack<int>();
+            List<string> list = new List<string>();
+            int check = 0;
+            var N = int.Parse(Console.ReadLine());
+            var line = Console.ReadLine().Split(" ");
+            for (int i = 0; i < N; i++)
+            {
+                var n = int.Parse(line[i]);
+                if (tupic.Count == 0 || tupic.Peek() > n)
+                {
+                    tupic.Push(n);
+                    check++;
+                }
+                else
+                {
+                    list.Add($"{1} {check}");
+                    check = 0;
+                    while (tupic.Count != 0 && tupic.Peek() < n)
+                    {
+                        if(put_in.Count != 0 &&  tupic.Peek() < put_in.Peek())
+                        {
+                            Console.WriteLine("0");
+                            return;
+                        }
+                        put_in.Push(tupic.Pop());
+                        check++;
+                    }
+                    list.Add($"{2} {check}");
+                    check = 0;
+                    i--;
+                }
+            }
+            if (put_in.Count() != 0 && put_in.Peek() > tupic.Peek())
+            {
+                Console.WriteLine(0);
+            }
+            else
+            {
+                list.Add($"{1} {check}");
+                list.Add($"{2} {tupic.Count}");
+                Console.WriteLine(list.Count);
+                for (int i = 0; i < list.Count; i++)
+                {
+                    Console.WriteLine(list[i]);
+                }
+            }
+        }
+    }
+}
