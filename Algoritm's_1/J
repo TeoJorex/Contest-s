@@ -1,0 +1,77 @@
+﻿﻿using System.Collections;
+using System.Collections.Generic;
+using System;
+using System.Linq;
+using System.Text;
+
+namespace zadach
+{
+    class Program
+    {
+        static void Main()
+        {           
+            var K = int.Parse(Console.ReadLine());
+            List<string> list = new List<string>();
+            for(int i = 0; i < K; i++)
+            {
+                var line = Console.ReadLine().Split(" ");
+                var n = long.Parse(line[0]);
+                var m = long.Parse(line[1]);
+                var sum = (m * m * n + m) * n / 2;
+                var want = (1 + n * m) * n * m / 4;
+                long l_v = 0;
+                var r_v = m;                
+                while (r_v > l_v)
+                {
+                    var mid = (r_v + l_v) / 2;
+                    var check = (m*(2 * n - 2) + 2 * mid + 2) * n * mid / 4;
+                    if(check >= want)
+                    {
+                        r_v = mid;
+                    }
+                    else
+                    {
+                        l_v = mid+1;
+                    }
+                }
+                var final_v = r_v;
+                if (Math.Abs(sum-2*((m * (2 * n - 2) + 2 * (r_v - 1) + 2) * n * (r_v - 1) / 4)) <= Math.Abs(sum-2*((m * (2 * n - 2) + 2 * (r_v) + 2) * n * (r_v) / 4)) && r_v != 0)
+                {
+                    final_v -= 1;
+                }
+                long l_h = 0;
+                var r_h = n;
+                while(r_h > l_h)
+                {
+                    var mid = (l_h + r_h) / 2;
+                    var check = (1 + m * (mid + 1)) * m * (mid + 1) / 2;
+                    if (check >= want)
+                    {
+                        r_h = mid;
+                    }
+                    else
+                    {
+                        l_h = mid + 1;
+                    }
+                }
+                var final_h = r_h;
+                if (Math.Abs(sum - 2 * (1 + m * final_h) * m * final_h / 2) <= Math.Abs(sum - 2 * (1 + m * (final_h+1)) * m * (final_h+1) / 2))
+                {
+                    final_h -= 1;
+                }
+                if (Math.Abs(sum - 2 * ((m * (2 * n - 2) + 2 * final_v + 2) * n * final_v / 4)) <= Math.Abs(sum - 2 * (1 + m * (final_h + 1)) * m * (final_h + 1) / 2))
+                {
+                    list.Add($"V {final_v+1}");
+                }
+                else
+                {
+                    list.Add($"H {final_h+2}");
+                }
+            }
+            for(int i = 0; i < list.Count; i++)
+            {
+                Console.WriteLine(list[i]);
+            }
+        }
+    }
+}
