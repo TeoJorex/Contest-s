@@ -1,0 +1,55 @@
+﻿using System.Collections;
+using System.Collections.Generic;
+using System;
+using System.Linq;
+
+namespace zadach
+{
+	class Tinkof
+	{
+		static void Main()
+		{
+			var kolvo = Console.ReadLine().Split(" ", StringSplitOptions.RemoveEmptyEntries);
+			var line = Console.ReadLine().Split(" ", StringSplitOptions.RemoveEmptyEntries);
+			var poisk = Console.ReadLine().Split(" ", StringSplitOptions.RemoveEmptyEntries);
+			for (var i = 0; i < poisk.Count(); i++)
+			{
+				var save_min = int.Parse(line[0]);
+				var save_max = int.Parse(line[line.Count() - 1]);
+
+				var l_max = 0;
+				var r_max = line.Count() - 1;
+
+				var l_min = 0;
+				var r_min = line.Count() - 1;
+				while (r_min > l_min)
+				{
+					var m = (r_min + l_min) / 2;
+					if (int.Parse(line[m]) >= int.Parse(poisk[i]))
+					{
+						r_min = m;
+						save_max = int.Parse(line[m]);
+					}
+					else
+					{
+						save_min = int.Parse(line[m]);
+						l_min = m + 1;
+					}
+				}
+				if (Math.Abs(int.Parse(poisk[i]) - save_max) == Math.Abs(int.Parse(poisk[i]) - save_min))
+				{
+					Console.WriteLine(Math.Min(save_max, save_min));
+				}
+				if (Math.Abs(int.Parse(poisk[i]) - save_max) < Math.Abs(int.Parse(poisk[i]) - save_min))
+				{
+					Console.WriteLine(save_max);
+				}
+				if (Math.Abs(int.Parse(poisk[i]) - save_max) > Math.Abs(int.Parse(poisk[i]) - save_min))
+				{
+					Console.WriteLine(save_min);
+				}
+			}
+
+		}
+	}
+}
