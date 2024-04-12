@@ -1,0 +1,45 @@
+﻿using System.Collections;
+using System.Collections.Generic;
+using System;
+using System.Linq;
+
+namespace zadach
+{
+	class Tinkof
+	{
+		static void Main()
+		{
+			var kolvo = Console.ReadLine().Split(" ", StringSplitOptions.RemoveEmptyEntries);
+			var line = Console.ReadLine().Split(" ", StringSplitOptions.RemoveEmptyEntries);
+			var poisk = Console.ReadLine().Split(" ", StringSplitOptions.RemoveEmptyEntries);
+			for (var i = 0; i < poisk.Count(); i++)
+			{
+				var check = "NO";
+				var l = 0;
+				var r = line.Count() - 1;
+				while (r > l)
+				{
+					var m = (r + l) / 2;
+					if (line[m] == poisk[i])
+					{
+						check = "YES";
+					}
+					if (int.Parse(line[m]) > int.Parse(poisk[i]))
+					{
+						r = m;
+					}
+					else
+					{
+						if (line[m+1] == poisk[i])
+						{
+							check = "YES";
+						}
+						l = m + 1;
+					}
+
+				}
+				Console.WriteLine(check);
+			}
+		}
+	}
+}
