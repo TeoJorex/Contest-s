@@ -1,0 +1,36 @@
+﻿﻿using System.Collections;
+using System.Collections.Generic;
+using System;
+using System.Linq;
+using System.Text;
+
+namespace zadach
+{
+    class Program
+    {
+        static void Main()
+        {
+            Stack<int> stack = new Stack<int>();
+            List<int> list = new List<int>();
+            int N = int.Parse(Console.ReadLine());
+            for (int i = 0; i < N; i++)
+            {
+                string[] input = Console.ReadLine().Split();
+                int operation = int.Parse(input[0]);
+                switch (operation)
+                {
+                    case 1:
+                        stack.Push(stack.Count != 0 ? Math.Min(int.Parse(input[1]), stack.Peek()) : int.Parse(input[1]));
+                        break;
+                    case 2:
+                        stack.Pop();
+                        break;
+                    case 3:
+                        list.Add(stack.Peek());
+                        break;
+                }
+            }
+            Console.WriteLine(string.Join("\n", list));
+        }
+    }
+}
