@@ -1,0 +1,71 @@
+﻿using System.Collections;
+using System.Collections.Generic;
+using System;
+using System.Linq;
+using System.Text;
+
+namespace zadach
+{
+    class Program
+    {
+        static void Main()
+        {
+            var N = long.Parse(Console.ReadLine());
+            List<(long,string)> list = new List<(long,string)>();
+            var kolvo_kass = N;
+            for(long i = 0; i < N; i++)
+            {
+                var line = Console.ReadLine().Split(" ");
+                if(line[0] == line[3] && line[1] == line[4] && line[2] == line[5])
+                {
+                    kolvo_kass--;
+                    continue;
+                }
+                var chas_1 = long.Parse(line[0]);
+                var min_1 = long.Parse(line[1]);
+                var sec_1 = long.Parse(line[2]);
+
+                var chas_2 = long.Parse(line[3]);
+                var min_2 = long.Parse(line[4]);
+                var sec_2 = long.Parse(line[5]);
+
+                if(chas_1 >= chas_2 && min_1 >= min_2 && sec_1 >= sec_2)
+                {
+                    list.Add((0, "+"));
+                    list.Add((chas_2*60*60+min_2*60+sec_2, "-"));
+
+                    list.Add((chas_1 * 60 * 60 + min_1 * 60 + sec_1, "+"));
+                    list.Add((24*60*60, "-"));
+                    continue;
+                }
+                list.Add((chas_1 * 60 * 60 + min_1 * 60 + sec_1, "+"));
+                list.Add((chas_2 * 60 * 60 + min_2 * 60 + sec_2, "-"));
+            }
+            list.Sort();   
+            long check = 0; 
+            long start_pont = 0;
+            long result = 0;
+            for(int i = 0; i < list.Count; i++)
+            {
+                if(list[i].Item2 == "+")
+                {
+                    check++;
+                    if(check == kolvo_kass)
+                    {
+                        start_pont = list[i].Item1;
+                    }
+                }
+                else
+                {
+                    if (check == kolvo_kass)
+                    {
+                        result += list[i].Item1 - start_pont;
+                    }
+                    check--;                    
+                }
+            }
+            Console.WriteLine(result);
+            
+        }    
+    }
+}
